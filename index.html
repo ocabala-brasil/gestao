@@ -737,7 +737,7 @@
   </style>
   <body>
     <!-- TELA INICIAL -->
-    <div id="home" class="screen active">
+    <div id="home" class="screen">
       <h1>Gerenciamento | Ó Caba Lá</h1>
       <div class="sectionsHome">
         <section class="card-container-btn">
@@ -793,7 +793,7 @@
     </div>
 
     <!-- TELA ESCALAÇÃO -->
-    <div id="escalacao" class="screen">
+    <div id="escalacao" class="screen active">
       <header>
         <h2>Escalação |</h2>
         Total Escalados: <span id="escaladosCount">0</span> Reservas:
@@ -1437,7 +1437,7 @@
     <div class="player-name">${nome}</div>
     <div class="action-buttons">
       <button title="Trocar"><img src="icons/change.svg" alt="Trocar"></button>
-      <button title="Remover"><img src="icons/icons/x.svg" alt="Remover"></button>
+      <button title="Remover"><img src="icons/x.svg" alt="Remover"></button>
     </div>
   `;
         container.appendChild(card);
@@ -1818,8 +1818,8 @@
           card.innerHTML = `
         <div class="player-name">${player.name}</div>
         <div class="action-buttons">
-          <button title="Trocar"><img src="icons/icons/change.svg" alt="Trocar"></button>
-          <button title="Remover"><img src="icons/icons/x.svg" alt="Remover"></button>
+          <button title="Trocar"><img src="icons/change.svg" alt="Trocar"></button>
+          <button title="Remover"><img src="icons/x.svg" alt="Remover"></button>
         </div>
       `;
 
@@ -1886,4 +1886,3 @@
     </script>
   </body>
 </html>
-
