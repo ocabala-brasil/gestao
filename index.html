@@ -1,0 +1,1888 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gerenciamento - Ó Caba Lá</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <style>
+    /* ===========================
+   VARIÁVEIS GLOBAIS
+=========================== */
+    :root {
+      --bg-dark: #121212;
+      --bg-muted: #1e1e1e;
+      --accent: #007bff;
+      --card-bg: #1e1e1e;
+      --light: #f5f5f5;
+      --text-dark: #333;
+      --radius: 8px;
+      --shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+
+      --defesa-color: #1976d2;
+      --ataque-color: #d32f2f;
+      --blindado-color: #616161;
+      --recon-color: #388e3c;
+      --card-color: #d1d1d1;
+      --verde-claro: #58d68d;
+    }
+
+    /* ===========================
+   RESET E TIPOGRAFIA
+=========================== */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: "Segoe UI", sans-serif;
+    }
+
+    body,
+    html {
+      height: 100%;
+      background: var(--bg-dark);
+      color: #fff;
+    }
+
+    h2,
+    h3,
+    h4 {
+      margin-bottom: 10px;
+      color: var(--verde-claro);
+    }
+
+    button {
+      cursor: pointer;
+      border: none;
+      background: none;
+    }
+
+    /* ===========================
+   TELAS
+=========================== */
+    .screen {
+      display: none;
+      padding: 20px;
+    }
+
+    .screen.active {
+      display: block;
+    }
+
+    /* ===========================
+   TELA HOME
+=========================== */
+
+    .sectionsHome {
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .card-container-btn {
+      margin-top: 35px;
+    }
+
+    .actionBtnHome {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .card {
+      background: var(--card-bg);
+      padding: 15px 20px;
+      width: 160px;
+      text-align: center;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-3px);
+    }
+
+    .clan-status {
+      padding: 15px;
+      margin-top: 20px;
+    }
+
+    .status-grid {
+      display: grid;
+      background: var(--bg-muted);
+      padding: 15px;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      border-radius: var(--radius);
+      gap: 20px;
+    }
+
+    .status-item ul {
+      list-style: none;
+      padding-left: 10px;
+    }
+
+    .clan-calendar {
+      width: 1000px;
+      margin-top: 35px;
+    }
+
+    .clan-calendar iframe {
+      width: 100%;
+      height: 75vh;
+      border: none;
+      border-radius: var(--radius);
+    }
+
+    /* ===========================
+   ESCALAÇÃO
+=========================== */
+
+    /* ===== CONTAINER GERAL ===== */
+    #container {
+      display: flex;
+      height: 80vh; /* menor que antes */
+      margin: 20px auto; /* centraliza */
+      border-radius: 12px; /* cantos arredondados */
+      overflow: hidden; /* respeita o radius */
+      background: #1f1f2e; /* fundo dark */
+      color: #eee;
+      font-family: "Segoe UI", Arial, sans-serif;
+      user-select: none;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+    }
+    /* ===== HEADER ===== */
+    header {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      padding: 12px 16px;
+      background: #2b2b3d;
+      color: #fff;
+      border-radius: 8px; /* arredonda só em cima */
+    }
+
+    header h2 {
+      margin: 0;
+      color: var(--verde-claro);
+    }
+
+    header button {
+      background: var(--verde-claro);
+      border: none;
+      padding: 6px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 500;
+    }
+
+    /* ===== SIDEBAR ===== */
+    .sidebarContainer {
+      width: 190px;
+      background: #262637;
+      display: flex;
+      flex-direction: column;
+      overflow-y: hidden;
+    }
+
+    #sidebar h3 {
+      margin: 4px;
+      font-size: 1rem;
+      color: var(--verde-claro);
+      text-align: center;
+    }
+
+    .sidebarContainer .boxComand {
+      padding: 10px;
+    }
+
+    .sidebarContainer .boxComand .dropSidebar {
+      height: 30px;
+      background-color: #1e1e1e54;
+      margin-bottom: 5px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .sidebarContainer
+      .boxComand
+      .dropSidebar
+      .player-card:hover
+      .action-buttons {
+      display: flex;
+    }
+
+    .sidebarContainer section h4 {
+      margin-bottom: 3px;
+    }
+
+    .actionBtnHeader {
+      display: flex;
+      gap: 30px; /* distância entre cada botão */
+      align-items: center;
+      position: absolute;
+      right: 30px;
+    }
+
+    .actionBtnHeader button {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-radius: 50%;
+      height: 40px;
+      width: 40px;
+      padding: 0;
+      background-color: var(--verde-claro); /* ou sua cor */
+      cursor: pointer;
+    }
+
+    .actionBtnHeader button img {
+      height: 20px;
+      width: 20px;
+    }
+
+    #addSectorBtn img {
+      height: 27px;
+      width: 27px;
+    }
+
+    .actionBtnHeader .btn-home img {
+      height: 25px;
+      width: 25px;
+    }
+
+    .searchBox {
+      position: relative;
+      width: 100%;
+      margin-bottom: 10px;
+    }
+
+    .searchContainer {
+      position: relative;
+      display: flex;
+      padding: 1px;
+      background-color: #fff;
+    }
+
+    .searchContainer input {
+      width: 100%;
+      border: none;
+      outline: none;
+      background-color: #fff;
+      padding: 5px 30px 5px 5px; /* <-- padding à direita pro X */
+      box-sizing: border-box; /* garante que não quebre o layout */
+    }
+
+    .clear-btn {
+      position: absolute;
+      right: 5px;
+      align-items: center;
+      height: 100%;
+      display: none;
+    }
+
+    .clear-btn img {
+      height: 20px;
+      width: 20px;
+    }
+
+    .searchList {
+      margin-top: 5px;
+      padding-left: 12px;
+      display: none; /* começa oculta */
+      max-height: 100px;
+      overflow-y: auto;
+    }
+
+    .no-results {
+      margin-left: 5px;
+      font-size: 13px;
+    }
+
+    /* Accordion */
+    .category {
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .category-header {
+      padding: 6px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 500;
+      background: transparent;
+      transition: background 0.3s;
+      text-align: center;
+      color: #eee;
+      margin-bottom: 3px;
+    }
+
+    .category-header:hover {
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .category-body {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease-out;
+      padding-left: 12px;
+      height: 150px;
+    }
+
+    .category-header.active + .category-body {
+      max-height: 300px;
+      overflow-y: auto;
+    }
+
+    /* ===== MAIN (Setores) ===== */
+    .sectorDiv {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px;
+      background: #1f1f2e;
+    }
+
+    #main {
+      display: flex;
+      flex-direction: column;
+    }
+
+    #main .mainAtaque,
+    .mainDefesa,
+    .mainBlindado,
+    .mainRecon,
+    .mainReserva {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 16px;
+      margin-bottom: 5px;
+    }
+
+    /* SETOR DOS PLAYERS */
+    .sector {
+      padding: 10px;
+      border-radius: 10px;
+      background: #2b2b3d;
+      min-height: 140px;
+      max-height: 260px;
+    }
+
+    .sectorList {
+      min-height: 120px;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+
+    .sidebarContainer .sector {
+      height: 10px;
+      color: #121212;
+    }
+
+    .sector h4 {
+      font-size: 1.05rem;
+    }
+
+    .oficial,
+    .infantaria {
+      font-size: 10px;
+    }
+
+    .oficialBox {
+      height: 30px;
+    }
+
+    .infantariaBox {
+      height: 130px;
+    }
+
+    /* PLAYER CARDS */
+    .player-card {
+      display: flex;
+      justify-content: space-between; /* mantém nome de um lado e botões do outro */
+      align-items: center; /* alinha verticalmente no centro */
+      width: 100%;
+      color: #121212;
+      background-color: var(--card-color);
+      padding: 3px 6px;
+      font-weight: 700;
+      font-size: 12px;
+      margin: 3px 0;
+      cursor: pointer;
+    }
+
+    .sidebarContainer .player-card {
+      width: 90%;
+    }
+
+    .action-buttons {
+      display: none; /* começa escondido */
+      gap: 5px; /* espaço entre os botões */
+    }
+
+    .sector .player-card:hover .action-buttons {
+      display: flex; /* mostra no hover */
+    }
+
+    .action-buttons img {
+      display: flex;
+      align-items: center;
+      width: 15px;
+      height: 15px;
+    }
+
+    .action-buttons button {
+      background-color: transparent;
+      border: none;
+      cursor: pointer;
+    }
+
+    .sbIconDiv {
+      display: none;
+    }
+
+    .sector[data-sector-type="defesaList"] {
+      border-left: 4px solid var(--defesa-color);
+    }
+    .sector[data-sector-type="ataqueList"] {
+      border-left: 4px solid var(--ataque-color);
+    }
+    .sector[data-sector-type="blindList"] {
+      border-left: 4px solid var(--blindado-color);
+    }
+    .sector[data-sector-type="reconList"] {
+      border-left: 4px solid var(--recon-color);
+    }
+    .sector[data-sector-type="reservaList"] {
+      border-left: 4px solid var(--card-color);
+    }
+
+    /* ===========================
+   FIM ESCALAÇÃO
+=========================== */
+
+    /* ===========================
+   BARRA ROLAGEM
+=========================== */
+
+    /* Para Chrome, Edge, Safari */
+    ::-webkit-scrollbar {
+      width: 5px; /* largura da barra vertical */
+    }
+
+    ::-webkit-scrollbar-track {
+      background: #d1d1d113; /* fundo da "trilha" */
+      border-radius: 10px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--verde-claro); /* cor da bolinha que arrasta */
+      border-radius: 10px;
+    }
+
+    /* ===========================
+   MODAL SETORES
+=========================== */
+    #modalSetores {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.6);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 999;
+    }
+
+    #modalSetores > div {
+      position: relative;
+      background: #262637;
+      padding: 0; /* tiramos padding daqui */
+      border-radius: var(--radius);
+      width: 420px;
+      max-height: 70vh;
+      box-shadow: var(--shadow);
+      color: white;
+      animation: fadeIn 0.3s ease;
+      display: flex;
+      text-align: left;
+      flex-direction: column; /* header em cima, conteúdo embaixo */
+    }
+
+    .modalHeader {
+      flex-shrink: 0; /* não deixa o header encolher */
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      background-color: #262637;
+      padding: 5px;
+      border-radius: 8px 8px 0 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .modalContent {
+      flex-grow: 1; /* ocupa o resto do modal */
+      overflow-y: auto; /* só aqui rola */
+      padding: 20px; /* espaçamento interno */
+    }
+
+    @keyframes fadeIn {
+      from {
+        transform: scale(0.9);
+        opacity: 0;
+      }
+      to {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
+    /* Modal header */
+    .modalHeader {
+      position: sticky;
+      top: 0;
+      z-index: 999;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: #262637;
+    }
+
+    .closeBtn {
+      position: absolute;
+      align-items: center;
+      right: 10px;
+      border: none;
+      background: none;
+      cursor: pointer;
+    }
+    .closeBtn img {
+      height: 25px;
+      width: 25px;
+    }
+
+    /* Accordion */
+    .accordionHeader {
+      margin: 15px 0 0;
+      margin-bottom: 10px;
+      padding: 10px 12px;
+      border-radius: 6px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #fff;
+      cursor: pointer;
+      user-select: none;
+      transition: background 0.2s ease;
+    }
+
+    .accordionHeader.defesa {
+      background: var(--defesa-color);
+    }
+    .accordionHeader.ataque {
+      background: var(--ataque-color);
+    }
+    .accordionHeader.blindado {
+      background: var(--blindado-color);
+    }
+    .accordionHeader.reconhecimento {
+      background: var(--recon-color);
+    }
+
+    .accordionBody {
+      max-height: 0;
+      width: 95%;
+      overflow-y: auto;
+      transition: max-height 0.3s ease, padding 0.2s ease;
+      padding: 0;
+      margin: 0;
+    }
+
+    .accordionBody.active {
+      max-height: 300px;
+      padding: 8px 0;
+    }
+
+    #modalSetores ul {
+      list-style: none;
+      margin-left: 10px;
+      padding: 0;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 8px;
+    }
+
+    .setorBtn {
+      width: 95%;
+      padding: 10px;
+      background: #f0f0f0;
+      cursor: pointer;
+      text-align: left;
+      transition: all 0.2s ease;
+      font-size: 0.9rem;
+    }
+
+    .accordionBody:first-of-type {
+      margin-top: 10px; /* ajusta o valor como quiser */
+    }
+
+    /* ===========================
+   FIM MODAL SETORES
+=========================== */
+
+    /* ===========================
+   MODAL NODOS
+=========================== */
+
+ .modalNTBox {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: none;
+  background-color: var(--bg-muted); /* fallback escuro */
+  width: 50%;
+  height: 70%;
+  z-index: 1000;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+.modalNTBox .sidebarContainer{
+ height: 100%;
+}
+
+  .modalNTBox button {
+  position: absolute;
+
+  background-color: var(--verde-claro);
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  height: 40px;
+  width: 40px;
+}
+
+.modalNTBox .modalCopiar{
+  bottom: 8px;
+  right: 8px;
+}
+.modalNTBox .modalFechar{
+  top: 8px;
+  right: 8px;
+}
+
+
+      .modalNTBox button img{
+        height: 20px;
+        width: 20px;
+      }
+
+      .modalNTPanel{
+        display: flex;
+        height: 100%;
+      }
+
+      .modalLeftPanel{
+        width: 250px;
+        padding: 20px 10px;
+      }
+
+    .modalNodeBox {
+      display: none;
+    }
+
+    .modalRightPanel{
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      flex-direction: column;
+      align-items: center;
+    }
+
+
+    .qgCard{
+      height: 50%;
+      border-radius: var(--radius);
+      padding: 20px;
+      background-color: var(--bg-dark);
+      width: 80%;
+    }
+    .qgCard .sup{
+      margin-left: 30px;
+    }
+    .qgCard div{
+      padding: 10px;
+    }
+
+    /* ===========================
+   MODAL CAMINHAO
+=========================== */
+
+    .modalTranspBox {
+      display: none;
+    }
+
+    #sbIcon {
+      display: none;
+    }
+
+    .selected-to-swap {
+      background-color: #d1faff;
+    }
+
+
+  </style>
+  <body>
+    <!-- TELA INICIAL -->
+    <div id="home" class="screen">
+      <h1>Gerenciamento | Ó Caba Lá</h1>
+      <div class="sectionsHome">
+        <section class="card-container-btn">
+          <h2>Menu</h2>
+          <div class="actionBtnHome">
+            <div class="card" onclick="openScreen('escalacao')">ESCALAÇÃO</div>
+            <div class="card">OUTRA FUNÇÃO</div>
+            <div class="card">OUTRA FUNÇÃO</div>
+            <div class="card">OUTRA FUNÇÃO</div>
+          </div>
+        </section>
+
+        <section class="clan-status">
+          <h2>Status Geral</h2>
+          <div class="status-grid">
+            <div class="status-item">
+              <strong>Total de Membros:</strong>
+              <span id="total-membros">186</span>
+            </div>
+            <div class="status-item">
+              <strong>Turnover:</strong> <span id="turnover">8%</span>
+            </div>
+            <div class="status-item">
+              <strong>Últimos 5 Recrutas:</stron  g>
+              <ul id="ultimos-recrutas">
+                <li>PlayerX</li>
+                <li>PlayerY</li>
+                <li>PlayerZ</li>
+                <li>PlayerA</li>
+                <li>PlayerB</li>
+              </ul>
+            </div>
+            <div class="status-item">
+              <strong>Últimos 5 que saíram:</strong>
+              <ul id="ultimos-saidas">
+                <li>PlayerC</li>
+                <li>PlayerD</li>
+                <li>PlayerE</li>
+                <li>PlayerF</li>
+                <li>PlayerG</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <section class="clan-calendar">
+          <h2>Agenda</h2>
+          <iframe
+            src="https://calendar.google.com/calendar/embed?src=ocabala.brasil%40gmail.com&ctz=America%2FSao_Paulo"
+          ></iframe>
+        </section>
+      </div>
+    </div>
+
+    <!-- TELA ESCALAÇÃO -->
+    <div id="escalacao" class="screen active">
+      <header>
+        <h2>Escalação |</h2>
+        Total Escalados: <span id="escaladosCount">0</span> Reservas:
+        <span id="reservasCount">0</span>
+        <div class="actionBtnHeader">
+          <button class="btn-home" title="Voltar" onclick="openScreen('home')">
+            <img src="icons/backHome.svg" alt="VOLTAR" />
+          </button>
+          <button
+            class="btn-home"
+            title="Gerenciar contrução de nodos"
+            onclick="abrirEscalNodo()"
+          >
+            <img src="icons/node.svg" alt="NODO" />
+          </button>
+          <button
+            class="btn-home"
+            title="Gerenciar caminhão de transporte"
+            onclick="openScreenTransp()"
+          >
+            <img src="icons/truck.svg" alt="CAMINHAO" />
+          </button>
+          <button
+            class="btn-copy"
+            title="Copiar para área de transferência"
+            onclick="copiarEscalacao()"
+          >
+            <img src="icons/copy.svg" alt="COPIAR" />
+          </button>
+          <button id="addSectorBtn" title="Adicionar setor">
+            <img src="icons/plus.svg" alt="+" />
+          </button>
+        </div>
+        <div class="sbIconDiv" title="Mostrar jogadores">
+          <button id="showSideBar" aria-label="Mostrar lista de jogadores">
+            <img id="sbIcon" src="icons/people.svg" alt="sidebar icon" />
+          </button>
+        </div>
+      </header>
+
+      <div id="container">
+        <div class="sidebarContainer">
+          <nav id="sidebar" aria-labelledby="soldadosLabel">
+            <div class="boxComand">
+              <section class="sectorSidebar" data-sector="comando">
+                <h4>Comando</h4>
+                <div class="dropSidebar"></div>
+              </section>
+              <section class="sectorSidebar" data-sector="artilharia">
+                <h4>Artilharia</h4>
+                <div class="dropSidebar"></div>
+              </section>
+            </div>
+
+            <div class="searchBox">
+              <div class="searchContainer">
+                <input
+                  type="text"
+                  id="searchInput"
+                  placeholder="Pesquisar jogador"
+                />
+                <button class="clear-btn" id="clearBtn">
+                  <img src="icons/x.svg" alt="x" />
+                </button>
+              </div>
+              <div class="searchList" id="searchResults"></div>
+            </div>
+
+            <div class="categoryBox">
+              <div class="category">
+                <div class="category-header active" data-target="compList">
+                  Competitivo
+                </div>
+                <div class="category-body" id="compList"></div>
+              </div>
+
+              <div class="category">
+                <div class="category-header" data-target="casualList">
+                  Casual
+                </div>
+                <div class="category-body" id="casualList"></div>
+              </div>
+
+              <div class="category">
+                <div class="category-header" data-target="recList">Recruta</div>
+                <div class="category-body" id="recList"></div>
+              </div>
+            </div>
+          </nav>
+        </div>
+
+        <div class="sectorDiv">
+          <main id="main">
+            <div class="mainDefesa"></div>
+            <div class="mainAtaque"></div>
+            <div class="mainBlindado"></div>
+            <div class="mainRecon"></div>
+            <div class="mainReserva">
+              <section class="sector" data-sector-type="reservaList">
+                <h4>Reservas</h4>
+                <div class="sectorList"></div>
+              </section>
+            </div>
+            <!-- <section class="sector" data-sector="reserva">
+              <h4>Reservas</h4>
+            </section> -->
+          </main>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL -->
+    <div id="modalSetores">
+      <div>
+        <!-- HEADER -->
+        <div class="modalHeader">
+          <button class="closeBtn" onclick="fecharModal()">
+            <img src="icons/x.svg" alt="X" />
+          </button>
+          <h3>Escolha o setor</h3>
+        </div>
+
+        <!-- ACCORDION -->
+        <!-- CONTEÚDO ROLÁVEL -->
+        <div class="modalContent">
+          <div class="accordion">
+            <div>
+              <div class="accordionHeader defesa">
+                DEFESA
+                <ul id="defesaList" class="accordionBody">
+                  <li><button class="setorBtn">Defesa</button></li>
+                  <li><button class="setorBtn">Defesa Retaguarda</button></li>
+                  <li>
+                    <button class="setorBtn">Defesa Central Controle</button>
+                  </li>
+                  <li>
+                    <button class="setorBtn">Defesa Central Construtor</button>
+                  </li>
+                  <li>
+                    <button class="setorBtn">Defesa Flanco Direito</button>
+                  </li>
+                  <li>
+                    <button class="setorBtn">Defesa Flanco Esquerdo</button>
+                  </li>
+                  <li>
+                    <button class="setorBtn">Defesa Flanco Tático</button>
+                  </li>
+                  <li><button class="setorBtn">Defesa Flanco Forte</button></li>
+                  <li>
+                    <button class="setorBtn">Defesa Flanco Coringa</button>
+                  </li>
+                  <li>
+                    <button class="setorBtn">Defesa Frontal Centro</button>
+                  </li>
+                  <li>
+                    <button class="setorBtn">Defesa Frontal Esquerdo</button>
+                  </li>
+                  <li>
+                    <button class="setorBtn">Defesa Frontal Direito</button>
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            <div>
+              <div class="accordionHeader ataque">
+                ATAQUE
+                <ul id="ataqueList" class="accordionBody">
+                  <li>
+                    <button class="setorBtn">Ataque</button>
+                  </li>
+                  <li>
+                    <button class="setorBtn">Ataque Frontal Centro</button>
+                  </li>
+                  <li>
+                    <button class="setorBtn">Ataque Frontal Esquerdo</button>
+                  </li>
+                  <li>
+                    <button class="setorBtn">Ataque Frontal Direito</button>
+                  </li>
+                  <li>
+                    <button class="setorBtn">Ataque Frontal Assalto</button>
+                  </li>
+                  <li>
+                    <button class="setorBtn">Ataque Frontal Móvel</button>
+                  </li>
+                  <li>
+                    <button class="setorBtn">Ataque Flanco Esquerdo</button>
+                  </li>
+                  <li>
+                    <button class="setorBtn">Ataque Flanco Direito</button>
+                  </li>
+                  <li>
+                    <button class="setorBtn">Ataque Flanco Retaguarda</button>
+                  </li>
+                  <li><button class="setorBtn">Ataque Coringa</button></li>
+                </ul>
+              </div>
+            </div>
+
+            <div>
+              <div class="accordionHeader blindado">
+                BLINDADOS
+                <ul id="blindList" class="accordionBody">
+                  <li><button class="setorBtn">Blindado</button></li>
+                  <li><button class="setorBtn">Blindado Recon</button></li>
+                  <li><button class="setorBtn">Blindado Leve</button></li>
+                  <li><button class="setorBtn">Blindado Médio</button></li>
+                  <li><button class="setorBtn">Blindado Pesado</button></li>
+                </ul>
+              </div>
+            </div>
+
+            <div>
+              <div class="accordionHeader reconhecimento">
+                RECONHECIMENTO
+                <ul id="reconList" class="accordionBody">
+                  <li>
+                    <button class="setorBtn">Reconhecimento Ataque</button>
+                  </li>
+                  <li>
+                    <button class="setorBtn">Reconhecimento Defesa</button>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL END-->
+
+    <!-- MODAL NODE BOX -->
+    
+    <div class="modalNTBox" id="modalNodo">
+      <button class="modalFechar" onclick="fecharModalNodo()"><img src="icons/x.svg" alt="FECHAR"></button>
+      <button class="modalCopiar" onclick="copiarEscalNodo()"><img src="icons/copy.svg" alt="COPIAR"></button>
+      <div class="modalNTPanel">
+        <div class="modalLeftPanel">
+              <div class="sidebarContainer">
+                <nav id="sidebar" aria-labelledby="soldadosLabel">
+
+                  <div class="searchBox">
+                    <div class="searchContainer">
+                      <input
+                        type="text"
+                        id="searchInput"
+                        placeholder="Pesquisar jogador"
+                      />
+                      <button class="clear-btn" id="clearBtn">
+                        <img src="icons/x.svg" alt="x" />
+                      </button>
+                    </div>
+                    <div class="searchList" id="searchResults"></div>
+                  </div>
+
+                  <div class="categoryBox">
+                    <div class="category">
+                      <div class="category-header active" data-target="compList">
+                        Competitivo
+                      </div>
+                      <div class="category-body" id="compList"></div>
+                    </div>
+
+                    <div class="category">
+                      <div class="category-header" data-target="casualList">
+                        Casual
+                      </div>
+                      <div class="category-body" id="casualList"></div>
+                    </div>
+
+                    <div class="category">
+                      <div class="category-header" data-target="recList">Recruta</div>
+                      <div class="category-body" id="recList"></div>
+                    </div>
+                  </div>
+                </nav>
+              </div>
+        </div>
+        <div class="modalRightPanel">
+          
+          <div class="qgCard">
+            <h3>QG1</h3>
+            <div class="eng"><img src="icons/eng.svg" alt="ENG"></div>
+            <div class="sup"><img src="icons/sup.svg" alt="SUP"></div>
+            <div class="sup"><img src="icons/sup.svg" alt="SUP"></div>
+            <div class="sup"><img src="icons/sup.svg" alt="SUP"></div>
+            <div class="sup"><img src="icons/sup.svg" alt="SUP"></div>
+          </div>
+
+          <div class="qgCard">
+            <h3>QG2</h3>
+            <div class="eng"><img src="icons/eng.svg" alt="ENG"></div>
+            <div class="sup"><img src="icons/sup.svg" alt="SUP"></div>
+            <div class="sup"><img src="icons/sup.svg" alt="SUP"></div>
+            <div class="sup"><img src="icons/sup.svg" alt="SUP"></div>
+            <div class="sup"><img src="icons/sup.svg" alt="SUP"></div>
+          </div>
+
+          <div class="qgCard">
+            <h3>QG3</h3>
+            <div class="eng"><img src="icons/eng.svg" alt="ENG"></div>
+            <div class="sup"><img src="icons/sup.svg" alt="SUP"></div>
+            <div class="sup"><img src="icons/sup.svg" alt="SUP"></div>
+            <div class="sup"><img src="icons/sup.svg" alt="SUP"></div>
+            <div class="sup"><img src="icons/sup.svg" alt="SUP"></div>
+          </div>
+          
+
+        </div>
+      </div>
+    </div>
+    
+    <!-- MODAL END-->
+
+    <!-- TELAS FUTURAS -->
+    <div id="dashboard" class="screen">
+      <button class="btn-home" onclick="openScreen('home')">Home</button>
+      <h2>Dashboard</h2>
+      <p>Em breve: métricas, estatísticas e controle.</p>
+    </div>
+
+    <div id="outros" class="screen">
+      <button class="btn-home" onclick="openScreen('home')">Home</button>
+      <h2>Outros</h2>
+      <p>Espaço para futuros recursos.</p>
+    </div>
+
+    <div id="sidebarOverlay" aria-hidden="true"></div>
+
+    <script>
+      // LISTAS DE PLAYERS
+      const competitivo = [
+        "0_P0H4_L0K4",
+        "1PaiCansado",
+        "5ergi0",
+        "ALISSON",
+        "Bakunin13",
+        "Blasius12",
+        "Bob_Killer",
+        "Brandao",
+        "Brant",
+        "BuckCompton",
+        "CAIOXP",
+        "CAIOZER4",
+        "CAMARA",
+        "Cesquine",
+        "Capitao",
+        "Caio",
+        "Comelli",
+        "DANKA",
+        "Desgramado",
+        "Doc",
+        "Dod",
+        "Eugenio-FJV",
+        "Fidelcastro",
+        "Franco762",
+        "GodsSon",
+        "Goiano",
+        "Goldenn",
+        "Gustavoss",
+        "H4RDC0R3",
+        "HENRIQUE",
+        "Hartmann",
+        "Hanz",
+        "IITACHI",
+        "Jaguara",
+        "JessePKMN",
+        "Jun1or",
+        "LEIX",
+        "Lerin",
+        "LucasAraujo",
+        "Luva",
+        "Marreta",
+        "Momo",
+        "Nardela",
+        "Onooguee",
+        "Padre",
+        "Prata",
+        "PUPPET",
+        "QUAIADO",
+        "Rafa12k",
+        "Remhard",
+        "Ricardo S",
+        "Rigoni",
+        "SadBoy",
+        "Sanches",
+        "SHADOW",
+        "SoldadoDoss",
+        "THDemolidor",
+        "TONELOTTO",
+        "TTruppel",
+        "ThC",
+        "VICTIM",
+        "WAMBROSIO",
+        "William29",
+        "Xtray",
+        "ZACARIAS",
+        "ZAK_KYLE",
+        "ZAMP",
+        "Zalapson",
+        "Zimmerman",
+        "finoti",
+        "matex777",
+        "shelby",
+      ];
+
+      const casual = [
+        "AMARAL",
+        "ARGIE",
+        "AZEVEDO",
+        "Abextado",
+        "Adam Kael",
+        "Amarco",
+        "Andre",
+        "Anarco",
+        "BRAZ",
+        "BRUNONL",
+        "Beikam",
+        "Cpliver",
+        "DIEGODR",
+        "DEADFURY",
+        "Dan Dias",
+        "Dartanhan",
+        "De Siqueira",
+        "Diplomata",
+        "Drkzx7",
+        "ELTON",
+        "FANTASMA",
+        "Felipe_C10",
+        "GovernadorXx",
+        "Guiza",
+        "Hendricks",
+        "INFANTE",
+        "ISAQUE SC",
+        "Igor",
+        "Italiano",
+        "JESTER",
+        "JJRambo",
+        "Jhombrico",
+        "Joaozanett",
+        "Jombre",
+        "KEPLIN",
+        "Kumera",
+        "Lozano",
+        "MARCAO",
+        "MEXERICA",
+        "MEDEIROS",
+        "MORETTI52",
+        "Maicon",
+        "Magnos64",
+        "MateusC",
+        "Maycon",
+        "Max",
+        "MemphisRS",
+        "Menezes",
+        "MiguelPaul",
+        "Neguinho",
+        "OCamarada",
+        "ODIN",
+        "OitoSix",
+        "Orea Seca",
+        "Oliveira027",
+        "PATRAOPF",
+        "P.Garcia",
+        "Pietro",
+        "RafBR",
+        "Rack",
+        "RicoStory",
+        "Rodrigues",
+        "Rossi",
+        "Romao",
+        "SOARES",
+        "SOUSA",
+        "Sick",
+        "SoldadoTHC",
+        "Stick",
+        "TENENTE",
+        "TheJuanLm",
+        "Thiago",
+        "Tom_Br",
+        "Unplugged",
+        "Vacilopuro",
+        "Vassili",
+        "Wesleyzera",
+        "Ygor Dias",
+        "Zero meia",
+        "Zero Hora",
+        "sacana",
+        "tr dudo",
+        "Biduzz",
+        "Fladzinsk",
+        "Martineli",
+        "Gabriel",
+        "Gabzera",
+        "JuvenasFC",
+        "Luciano95",
+        "Walissom",
+        "xBandidox",
+        "DiaboLoro",
+        "EverlonPaz",
+      ];
+
+      const recrutas = [
+        "Amichi",
+        "Big_Boss",
+        "Carlos",
+        "Croco",
+        "Dhovakin7",
+        "FCastro",
+        "Francesco",
+        "MLacerda",
+        "Sabonete",
+        "Vioflalost",
+        "ZeBola",
+      ]; 
+
+      // ===========================
+      // TROCA DE TELAS
+      // ===========================
+      function openScreen(screenId) {
+        document.querySelectorAll(".screen").forEach((screen) => {
+          screen.classList.remove("active");
+        });
+        document.getElementById(screenId).classList.add("active");
+      }
+
+      // ===========================
+      // SIDEBAR SANFONA
+      // ===========================
+      // Controle da sanfona
+      document.querySelectorAll(".category-header").forEach((header) => {
+        header.addEventListener("click", () => {
+          // fecha todos
+          document.querySelectorAll(".category-header").forEach((h) => {
+            h.classList.remove("active");
+            document.getElementById(h.dataset.target).style.maxHeight = null;
+          });
+
+          // abre só o clicado
+          header.classList.add("active");
+          const body = document.getElementById(header.dataset.target);
+          body.style.maxHeight = "150px";
+        });
+      });
+
+      // ===========================
+      // TOGGLE SIDEBAR
+      // ===========================
+      document.getElementById("showSideBar").addEventListener("click", () => {
+        const sidebar = document.getElementById("sidebar");
+        sidebar.classList.toggle("hidden");
+      });
+
+      // ===========================
+      // MODAL SETORES
+      // ===========================
+      const modal = document.getElementById("modalSetores");
+      document.getElementById("addSectorBtn").addEventListener("click", () => {
+        modal.style.display = "flex";
+      });
+
+      function fecharModal() {
+        modal.style.display = "none";
+      }
+
+      // ===========================
+      // ACORDEÃO MODAL
+      // ===========================
+      document.querySelectorAll(".accordionHeader").forEach((header) => {
+        header.addEventListener("click", () => {
+          const body = header.querySelector(".accordionBody");
+
+          // fecha todas as listas
+          document.querySelectorAll(".accordionBody").forEach((b) => {
+            if (b !== body) b.classList.remove("active");
+          });
+
+          // alterna só a clicada
+          body.classList.toggle("active");
+        });
+      });
+
+      // ===========================
+      // ADICIONAR SETOR DINÂMICO
+      // ===========================
+      document.querySelectorAll(".setorBtn").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const tipoSetor = btn.closest(".accordionBody").id; // ex: defesaList
+          const nomeSetor = btn.innerText;
+
+          // Mapeamento do setor -> container alvo
+          const containerMap = {
+            defesaList: document.querySelector(".mainDefesa"),
+            ataqueList: document.querySelector(".mainAtaque"),
+            blindList: document.querySelector(".mainBlindado"),
+            reconList: document.querySelector(".mainRecon"),
+          };
+
+          const container = containerMap[tipoSetor];
+          if (!container) {
+            console.warn(`Nenhum container encontrado para ${tipoSetor}`);
+            return;
+          }
+
+          const setorDiv = document.createElement("section");
+          setorDiv.className = "sector";
+          setorDiv.dataset.sectorType = tipoSetor;
+
+          // estrutura completa
+          setorDiv.innerHTML = `
+      <h4>${nomeSetor}</h4>
+      <div class="sectorList">
+        <div class="oficial">
+          OFICIAL
+          <div class="oficialBox"></div>
+        </div>
+        <div class="infantaria">
+          INFANTARIA
+          <div class="infantariaBox"></div>
+        </div>
+      </div>
+    `;
+
+          container.appendChild(setorDiv);
+          habilitarRemoverSetor(setorDiv); // Habilita o click direito para remover setor
+          fecharModal();
+        });
+      });
+
+      // ===========================
+      // PLAYER CARDS
+      // ===========================
+
+      function criarPlayerCard(nome, containerId) {
+        const container = document.getElementById(containerId);
+        const card = document.createElement("div");
+        card.className = "player-card";
+        card.innerHTML = `
+    <div class="player-name">${nome}</div>
+    <div class="action-buttons">
+      <button title="Trocar"><img src="icons/change.svg" alt="Trocar"></button>
+      <button title="Remover"><img src="icons/icons/x.svg" alt="Remover"></button>
+    </div>
+  `;
+        container.appendChild(card);
+
+        habilitarDrag(card); // Drag & drop
+        adicionarAcoesCard(card); // Remover e trocar
+      }
+
+      // Criar cards de jogadores automaticamente
+      competitivo.forEach((nome) => criarPlayerCard(nome, "compList"));
+      casual.forEach((nome) => criarPlayerCard(nome, "casualList"));
+      recrutas.forEach((nome) => criarPlayerCard(nome, "recList"));
+
+      // ===========================
+      // DRAG & DROP PARA CARDS
+      // ===========================
+
+      const main = document.getElementById("main");
+
+      function habilitarDrag(card) {
+        card.setAttribute("draggable", true);
+
+        card.addEventListener("dragstart", (e) => {
+          e.dataTransfer.setData("text/plain", card.innerText);
+          setTimeout(() => card.classList.add("dragging"), 0);
+        });
+
+        card.addEventListener("dragend", () => {
+          card.classList.remove("dragging");
+        });
+      }
+
+      document.querySelectorAll(".player-card").forEach(habilitarDrag);
+
+      function habilitarDrop(box) {
+        // necessário para ativar drop
+        box.addEventListener("dragover", (e) => {
+          e.preventDefault();
+          box.classList.add("drag-over");
+        });
+
+        box.addEventListener("dragleave", () => {
+          box.classList.remove("drag-over");
+        });
+
+        box.addEventListener("drop", (e) => {
+          e.preventDefault();
+          box.classList.remove("drag-over");
+
+          const draggingCard = document.querySelector(".dragging");
+          if (!draggingCard) return;
+
+          let dropTarget = box;
+
+          // Se for dropSidebar, só joga direto
+          if (box.classList.contains("dropSidebar")) {
+            dropTarget.appendChild(draggingCard);
+            atualizarContadores();
+            return;
+          }
+
+          const sector = box.closest(".sector");
+          const sectorType = sector?.dataset.sectorType || "";
+
+          // Determina a box correta para setores com boxes
+          if (
+            !["comandoList", "artilhariaList", "reservaList"].includes(
+              sectorType
+            )
+          ) {
+            if (
+              box.classList.contains("oficialBox") ||
+              box.classList.contains("infantariaBox")
+            ) {
+              dropTarget = box;
+            } else {
+              if (
+                sector.querySelector(".oficialBox") &&
+                sector.querySelector(".oficialBox").children.length < 1
+              ) {
+                dropTarget = sector.querySelector(".oficialBox");
+              } else if (sector.querySelector(".infantariaBox")) {
+                const maxInf =
+                  sectorType === "blindList"
+                    ? 2
+                    : sectorType === "reconList"
+                    ? 1
+                    : 5;
+                if (
+                  sector.querySelector(".infantariaBox").children.length <
+                  maxInf
+                ) {
+                  dropTarget = sector.querySelector(".infantariaBox");
+                } else {
+                  return; // limite
+                }
+              }
+            }
+          }
+
+          // valida limites
+          if (
+            dropTarget.classList.contains("oficialBox") &&
+            dropTarget.children.length >= 1
+          ) {
+            return;
+          }
+
+          if (dropTarget.classList.contains("infantariaBox")) {
+            const maxCards =
+              sectorType === "blindList"
+                ? 2
+                : sectorType === "reconList"
+                ? 1
+                : 5;
+            if (dropTarget.children.length >= maxCards) {
+              return;
+            }
+          }
+
+          dropTarget.appendChild(draggingCard);
+          atualizarContadores();
+        });
+      }
+
+      // aplica para os já existentes
+      document
+        .querySelectorAll(
+          ".dropSidebar, .oficialBox, .infantariaBox, .sectorList"
+        )
+        .forEach(habilitarDrop);
+
+      // observer para boxes criadas dinamicamente
+      const observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+          mutation.addedNodes.forEach((node) => {
+            if (node.nodeType === 1) {
+              node
+                .querySelectorAll(
+                  ".dropSidebar, .oficialBox, .infantariaBox, .sectorList"
+                )
+                .forEach(habilitarDrop);
+            }
+          });
+        });
+      });
+
+      observer.observe(main, { childList: true, subtree: true });
+
+      // também observar a sidebar
+      const sidebar = document.getElementById("sidebar");
+      observer.observe(sidebar, { childList: true, subtree: true });
+
+      // ===========================
+      // REMOVER JOGADOR E DEVOLVER À CATEGORIA
+      // ===========================
+
+      // Função que devolve card para sua categoria
+      function devolverParaCategoria(card) {
+        const nome = card.querySelector(".player-name").innerText;
+
+        // Verifica em qual lista o jogador está
+        if (competitivo.includes(nome)) {
+          document.getElementById("compList").appendChild(card);
+        } else if (casual.includes(nome)) {
+          document.getElementById("casualList").appendChild(card);
+        } else if (recrutas.includes(nome)) {
+          document.getElementById("recList").appendChild(card);
+        }
+
+        atualizarContadores();
+      }
+
+      // ===========================
+      // TROCAR JOGADOR
+      // ===========================
+
+      // Variável global para armazenar o primeiro card selecionado
+      let firstCardToSwap = null;
+
+      function adicionarAcoesCard(card) {
+        const removerBtn = card.querySelector('button[title="Remover"]');
+        const trocarBtn = card.querySelector('button[title="Trocar"]');
+
+        // Remover card
+        removerBtn.addEventListener("click", () => {
+          devolverParaCategoria(card);
+        });
+
+        // Trocar card
+        trocarBtn.addEventListener("click", () => {
+          // Só permitir trocar se o card estiver dentro de um setor
+          //if (!card.closest('main .sector')) return;
+
+          if (!firstCardToSwap) {
+            // Marca o primeiro card
+            firstCardToSwap = card;
+            card.classList.add("selected-to-swap"); // efeito visual opcional
+          } else if (firstCardToSwap === card) {
+            // Se clicou no mesmo card, cancela
+            firstCardToSwap.classList.remove("selected-to-swap");
+            firstCardToSwap = null;
+          } else {
+            // Swap entre os dois cards
+            const parent1 = firstCardToSwap.parentNode;
+            const sibling1 =
+              firstCardToSwap.nextSibling === card
+                ? firstCardToSwap
+                : firstCardToSwap.nextSibling;
+
+            const parent2 = card.parentNode;
+            const sibling2 =
+              card.nextSibling === firstCardToSwap ? card : card.nextSibling;
+
+            parent1.insertBefore(card, sibling1);
+            parent2.insertBefore(firstCardToSwap, sibling2);
+
+            // Limpa seleção visual e variável
+            firstCardToSwap.classList.remove("selected-to-swap");
+            firstCardToSwap = null;
+          }
+        });
+      }
+
+      // ===========================
+      // CONTAR JOGADORES
+      // ===========================
+
+      function atualizarContadores() {
+        // Conta no main
+        const escalados =
+          document.querySelectorAll("#main .player-card").length;
+
+        // Conta no sidebar -> só comando e artilharia
+        const sidebarPlayers = document.querySelectorAll(
+          "#sidebar .boxComand .player-card"
+        ).length;
+
+        const escaladosReserva = document.querySelectorAll(
+          "#main .mainReserva .player-card"
+        ).length;
+
+        const reservas = escaladosReserva;
+
+        // Atualiza nos spans
+        document.getElementById("escaladosCount").innerText =
+          escalados + sidebarPlayers - escaladosReserva;
+        document.getElementById("reservasCount").innerText = reservas;
+      }
+
+      // ======================================
+      // COPIAR EM FORMA DE TEXTO A ESCALACAO
+      // ======================================
+
+      function copiarEscalacao() {
+        let texto = "⚠️ ESCALAÇÃO ⚠️\n\n";
+
+        // =====================
+        // Sidebar: Comando e Artilharia
+        // =====================
+        const comando = document.querySelectorAll(
+          '.sectorSidebar[data-sector="comando"] .player-card'
+        );
+        if (comando.length) {
+          texto += "🪖 COMANDO\n";
+          comando.forEach((card) => (texto += card.innerText + "\n"));
+          texto += "\n";
+        }
+
+        const artilharia = document.querySelectorAll(
+          '.sectorSidebar[data-sector="artilharia"] .player-card'
+        );
+        if (artilharia.length) {
+          texto += "💣 ARTILHARIA\n";
+          artilharia.forEach((card) => (texto += card.innerText + "\n"));
+          texto += "\n";
+        }
+
+        // =====================
+        // Main: setores dinâmicos
+        // =====================
+        const setores = document.querySelectorAll("#main .sector");
+        setores.forEach((sector) => {
+          const titulo =
+            sector.querySelector("h4")?.innerText.toLocaleUpperCase() ||
+            "SEM NOME";
+          const tipo = sector.dataset.sectorType;
+
+          // cabeçalho especial com emojis por tipo
+          if (tipo.includes("defesa")) {
+            texto += "🛡🛡 DEFESA 🛡🛡\n\n";
+          } else if (tipo.includes("ataque")) {
+            texto += "⚔⚔ ATAQUE ⚔⚔\n\n";
+          } else if (tipo.includes("recon")) {
+            texto += "📸📸 VIGIA 📸📸\n\n";
+          } else if (tipo.includes("blind")) {
+            texto += "🚜🚜🚜 BLINDADO 🚜🚜🚜\n\n";
+          }
+
+          texto += `${titulo}\n`;
+
+          // pega OFICIAL
+          const oficial = sector.querySelector(".oficialBox .player-card");
+          if (oficial) {
+            texto += `${oficial.innerText} (OFICIAL)\n`;
+          }
+
+          // pega INFANTARIA
+          sector
+            .querySelectorAll(".infantariaBox .player-card")
+            .forEach((card) => (texto += card.innerText + "\n"));
+
+          texto += "\n";
+        });
+
+        // =====================
+        // Copiar para clipboard
+        // =====================
+        navigator.clipboard
+          .writeText(texto)
+          .then(() => alert("Escalação copiada para área de transferência!"))
+          .catch((err) => console.error("Erro ao copiar:", err));
+      }
+
+      // ======================================
+      // ADD CLICK DIREITO PARA REMOVER SETOR
+      // ======================================
+
+      function habilitarRemoverSetor(setor) {
+        setor.addEventListener("contextmenu", (e) => {
+          e.preventDefault(); // evita menu padrão
+
+          if (
+            !confirm(
+              `Deseja remover o setor "${
+                setor.querySelector("h4")?.innerText
+              }"?`
+            )
+          )
+            return;
+
+          // pega todos os cards dentro do setor
+          const cards = setor.querySelectorAll(".player-card");
+
+          cards.forEach((card) => {
+            devolverParaCategoria(card);
+          });
+
+          // remove o setor
+          setor.remove();
+          //atualizarContadores();
+        });
+      }
+
+      // ======================================
+      // FUNCOES PARA PESQUISAR JOGADOR NO SIDEBAR
+      // ======================================
+
+      // Junta tudo com a tag do grupo
+      const allPlayers = [
+        ...competitivo.map((name) => ({ name, type: "Competitivo" })),
+        ...casual.map((name) => ({ name, type: "Casual" })),
+        ...recrutas.map((name) => ({ name, type: "Recruta" })),
+      ];
+
+      const searchInput = document.getElementById("searchInput");
+      const searchResults = document.getElementById("searchResults");
+      const clearBtn = document.getElementById("clearBtn");
+
+      function renderPlayers(players) {
+        searchResults.innerHTML = "";
+
+        players.forEach((player) => {
+          const card = document.createElement("div");
+          card.classList.add("player-card");
+          card.setAttribute("draggable", "true");
+
+          card.innerHTML = `
+        <div class="player-name">${player.name}</div>
+        <div class="action-buttons">
+          <button title="Trocar"><img src="icons/icons/change.svg" alt="Trocar"></button>
+          <button title="Remover"><img src="icons/icons/x.svg" alt="Remover"></button>
+        </div>
+      `;
+
+          searchResults.appendChild(card);
+
+          habilitarDrag(card); // Drag & drop
+          adicionarAcoesCard(card); // Remover e trocar
+        });
+      }
+
+      function searchPlayers(query) {
+        const results = allPlayers.filter((player) =>
+          player.name.toLowerCase().includes(query.toLowerCase())
+        );
+        renderPlayers(results);
+      }
+
+      // Quando digita no input
+      searchInput.addEventListener("input", (e) => {
+        const value = e.target.value.trim();
+
+        if (value === "") {
+          searchResults.style.display = "none"; // oculta lista
+          clearBtn.style.display = "none"; // oculta X
+        } else {
+          searchPlayers(value);
+
+          const cardCount = document.querySelectorAll(
+            ".searchList .player-card"
+          ).length;
+
+          if (cardCount == 0) {
+            searchResults.innerHTML = `<div class="no-results">Sem resultados.</div>`;
+          }
+          searchResults.style.display = "block"; // mostra lista
+          clearBtn.style.display = "flex"; // mostra X
+        }
+      });
+
+      // Botão X limpa tudo
+      clearBtn.addEventListener("click", () => {
+        searchInput.value = "";
+        searchResults.style.display = "none";
+        clearBtn.style.display = "none";
+        searchInput.focus();
+      });
+
+
+
+     function copiarEscalNodo(){
+      
+     }
+
+     function fecharModalNodo(){
+      const modal = document.getElementById("modalNodo");
+      modal.style.display = "none";
+     }
+
+     function abrirEscalNodo(){
+      const modal = document.getElementById("modalNodo");
+      modal.style.display = "block";
+     }
+
+    </script>
+  </body>
+</html>
