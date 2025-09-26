@@ -672,8 +672,8 @@
 .modalNTBox .modalFechar{
   top: 8px;
   right: 8px;
+  background-color: transparent;
 }
-
 
       .modalNTBox button img{
         height: 20px;
@@ -702,20 +702,36 @@
       align-items: center;
     }
 
+    .modalNTBox div img{
+        height: 12px;
+        width: fit-content;
+      }
+
 
     .qgCard{
-      height: 50%;
+      display: flex;
       border-radius: var(--radius);
-      padding: 20px;
-      background-color: var(--bg-dark);
+      padding: 10px;
       width: 80%;
     }
-    .qgCard .sup{
-      margin-left: 30px;
+
+    .qgCardEnv{
+      margin-left: 20px;
+
     }
-    .qgCard div{
-      padding: 10px;
+
+    .qgCard .eng, .sup{
+      display: flex;
     }
+    .qgCard .eng div{
+      height: 20px;
+      background-color: var(--card-color);
+    }
+    .qgCard .sup div{
+      height: 20px;
+      background-color: var(--card-color);
+    }
+
 
     /* ===========================
    MODAL CAMINHAO
@@ -1075,34 +1091,45 @@
               </div>
         </div>
         <div class="modalRightPanel">
-          
+
           <div class="qgCard">
-            <h3>QG1</h3>
-            <div class="eng"><img src="icons/eng.svg" alt="ENG"></div>
-            <div class="sup"><img src="icons/sup.svg" alt="SUP"></div>
-            <div class="sup"><img src="icons/sup.svg" alt="SUP"></div>
-            <div class="sup"><img src="icons/sup.svg" alt="SUP"></div>
-            <div class="sup"><img src="icons/sup.svg" alt="SUP"></div>
+            <div>
+              <h3>QG1</h3>
+            </div>
+            <div class="qgCardEnv">
+              <div class="eng"><img src="icons/eng.png" alt="ENG"><div></div></div>
+              <div class="sup"><img src="icons/sup.png" alt="SUP"><div></div></div>
+              <div class="sup"><img src="icons/sup.png" alt="SUP"><div></div></div>
+              <div class="sup"><img src="icons/sup.png" alt="SUP"><div></div></div>
+              <div class="sup"><img src="icons/sup.png" alt="SUP"><div></div></div>
+            </div>
           </div>
 
           <div class="qgCard">
-            <h3>QG2</h3>
-            <div class="eng"><img src="icons/eng.svg" alt="ENG"></div>
-            <div class="sup"><img src="icons/sup.svg" alt="SUP"></div>
-            <div class="sup"><img src="icons/sup.svg" alt="SUP"></div>
-            <div class="sup"><img src="icons/sup.svg" alt="SUP"></div>
-            <div class="sup"><img src="icons/sup.svg" alt="SUP"></div>
+            <div>
+              <h3>QG2</h3>
+            </div>
+            <div class="qgCardEnv">
+              <div class="eng"><img src="icons/eng.png" alt="ENG"><div></div></div>
+              <div class="sup"><img src="icons/sup.png" alt="SUP"><div></div></div>
+              <div class="sup"><img src="icons/sup.png" alt="SUP"><div></div></div>
+              <div class="sup"><img src="icons/sup.png" alt="SUP"><div></div></div>
+              <div class="sup"><img src="icons/sup.png" alt="SUP"><div></div></div>
+            </div>
           </div>
 
           <div class="qgCard">
-            <h3>QG3</h3>
-            <div class="eng"><img src="icons/eng.svg" alt="ENG"></div>
-            <div class="sup"><img src="icons/sup.svg" alt="SUP"></div>
-            <div class="sup"><img src="icons/sup.svg" alt="SUP"></div>
-            <div class="sup"><img src="icons/sup.svg" alt="SUP"></div>
-            <div class="sup"><img src="icons/sup.svg" alt="SUP"></div>
+            <div>
+              <h3>QG3</h3>
+            </div>
+            <div class="qgCardEnv">
+              <div class="eng"><img src="icons/eng.png" alt="ENG"><div></div></div>
+              <div class="sup"><img src="icons/sup.png" alt="SUP"><div></div></div>
+              <div class="sup"><img src="icons/sup.png" alt="SUP"><div></div></div>
+              <div class="sup"><img src="icons/sup.png" alt="SUP"><div></div></div>
+              <div class="sup"><img src="icons/sup.png" alt="SUP"><div></div></div>
+            </div>
           </div>
-          
 
         </div>
       </div>
@@ -1205,12 +1232,11 @@
       const casual = [
         "AMARAL",
         "ARGIE",
-        "AZEVEDO",
-        "Abextado",
         "Adam Kael",
         "Amarco",
         "Andre",
         "Anarco",
+        "AZEVEDO",
         "BRAZ",
         "BRUNONL",
         "Beikam",
@@ -1260,6 +1286,7 @@
         "Oliveira027",
         "PATRAOPF",
         "P.Garcia",
+        "Paulao",
         "Pietro",
         "RafBR",
         "Rack",
@@ -1693,74 +1720,79 @@
       // ======================================
 
       function copiarEscalacao() {
-        let texto = "⚠️ ESCALAÇÃO ⚠️\n\n";
+  let texto = "⚠️ ESCALAÇÃO ⚠️\n\n";
 
-        // =====================
-        // Sidebar: Comando e Artilharia
-        // =====================
-        const comando = document.querySelectorAll(
-          '.sectorSidebar[data-sector="comando"] .player-card'
-        );
-        if (comando.length) {
-          texto += "🪖 COMANDO\n";
-          comando.forEach((card) => (texto += card.innerText + "\n"));
-          texto += "\n";
-        }
+  // =====================
+  // Sidebar: Comando e Artilharia
+  // =====================
+  const comando = document.querySelectorAll(
+    '.sectorSidebar[data-sector="comando"] .player-card'
+  );
+  if (comando.length) {
+    texto += "🪖 COMANDO\n";
+    comando.forEach((card) => (texto += card.innerText + "\n"));
+    texto += "\n";
+  }
 
-        const artilharia = document.querySelectorAll(
-          '.sectorSidebar[data-sector="artilharia"] .player-card'
-        );
-        if (artilharia.length) {
-          texto += "💣 ARTILHARIA\n";
-          artilharia.forEach((card) => (texto += card.innerText + "\n"));
-          texto += "\n";
-        }
+  const artilharia = document.querySelectorAll(
+    '.sectorSidebar[data-sector="artilharia"] .player-card'
+  );
+  if (artilharia.length) {
+    texto += "💣 ARTILHARIA\n";
+    artilharia.forEach((card) => (texto += card.innerText + "\n"));
+    texto += "\n";
+  }
 
-        // =====================
-        // Main: setores dinâmicos
-        // =====================
-        const setores = document.querySelectorAll("#main .sector");
-        setores.forEach((sector) => {
-          const titulo =
-            sector.querySelector("h4")?.innerText.toLocaleUpperCase() ||
-            "SEM NOME";
-          const tipo = sector.dataset.sectorType;
+  // =====================
+  // Main: setores dinâmicos
+  // =====================
+  const setores = document.querySelectorAll("#main .sector");
+  const tiposImpressos = new Set(); // <- guarda os tipos já usados
 
-          // cabeçalho especial com emojis por tipo
-          if (tipo.includes("defesa")) {
-            texto += "🛡🛡 DEFESA 🛡🛡\n\n";
-          } else if (tipo.includes("ataque")) {
-            texto += "⚔⚔ ATAQUE ⚔⚔\n\n";
-          } else if (tipo.includes("recon")) {
-            texto += "📸📸 VIGIA 📸📸\n\n";
-          } else if (tipo.includes("blind")) {
-            texto += "🚜🚜🚜 BLINDADO 🚜🚜🚜\n\n";
-          }
+  setores.forEach((sector) => {
+    const titulo =
+      sector.querySelector("h4")?.innerText.toLocaleUpperCase() || "SEM NOME";
+    const tipo = sector.dataset.sectorType;
 
-          texto += `${titulo}\n`;
-
-          // pega OFICIAL
-          const oficial = sector.querySelector(".oficialBox .player-card");
-          if (oficial) {
-            texto += `${oficial.innerText} (OFICIAL)\n`;
-          }
-
-          // pega INFANTARIA
-          sector
-            .querySelectorAll(".infantariaBox .player-card")
-            .forEach((card) => (texto += card.innerText + "\n"));
-
-          texto += "\n";
-        });
-
-        // =====================
-        // Copiar para clipboard
-        // =====================
-        navigator.clipboard
-          .writeText(texto)
-          .then(() => alert("Escalação copiada para área de transferência!"))
-          .catch((err) => console.error("Erro ao copiar:", err));
+    // imprime o cabeçalho só se ainda não foi impresso
+    if (!tiposImpressos.has(tipo)) {
+      if (tipo.includes("defesa")) {
+        texto += "🛡🛡 DEFESA 🛡🛡\n\n";
+      } else if (tipo.includes("ataque")) {
+        texto += "⚔⚔ ATAQUE ⚔⚔\n\n";
+      } else if (tipo.includes("recon")) {
+        texto += "📸📸 VIGIA 📸📸\n\n";
+      } else if (tipo.includes("blind")) {
+        texto += "🚜🚜🚜 BLINDADO 🚜🚜🚜\n\n";
       }
+      tiposImpressos.add(tipo);
+    }
+
+    texto += `${titulo}\n`;
+
+    // pega OFICIAL
+    const oficial = sector.querySelector(".oficialBox .player-card");
+    if (oficial) {
+      texto += `${oficial.innerText} (OFICIAL)\n`;
+    }
+
+    // pega INFANTARIA
+    sector
+      .querySelectorAll(".infantariaBox .player-card")
+      .forEach((card) => (texto += card.innerText + "\n"));
+
+    texto += "\n";
+  });
+
+  // =====================
+  // Copiar para clipboard
+  // =====================
+  navigator.clipboard
+    .writeText(texto)
+    .then(() => alert("Escalação copiada para área de transferência!"))
+    .catch((err) => console.error("Erro ao copiar:", err));
+}
+
 
       // ======================================
       // ADD CLICK DIREITO PARA REMOVER SETOR
