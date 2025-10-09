@@ -355,7 +355,7 @@
     .mainRecon,
     .mainReserva {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
       gap: 16px;
       margin-bottom: 5px;
     }
@@ -365,14 +365,23 @@
       padding: 10px;
       border-radius: 10px;
       background: #2b2b3d;
-      min-height: 140px;
-      max-height: 260px;
+    }
+
+    .sector img{
+      height: 20px;
     }
 
     .sectorList {
-      min-height: 120px;
-      max-height: 200px;
       overflow-y: auto;
+    }
+
+    .sectorListReserva {
+      overflow-y: auto;
+      height: 90%;
+    }
+    .sector .sectorListReserva .drag-over {
+      height: 100px;
+      background-color: #0000001e;
     }
 
     .sidebarContainer .sector {
@@ -381,6 +390,7 @@
     }
 
     .sector h4 {
+      margin-bottom: 0;
       font-size: 1.05rem;
     }
 
@@ -388,13 +398,26 @@
     .infantaria {
       font-size: 10px;
     }
+    .oficial {
+      display: flex;
+      margin: 3px 0px 3px 3px;
+      align-items: center;
+    }
 
-    .oficialBox {
-      height: 30px;
+    .oficialBox{
+      display: flex;
+      height: 28px;
+      width: 100%;
+      align-items: center;
+      margin-left: 5px;
+    }
+    .sectorList .drag-over{
+      border-radius: 3px;
+      background-color: #0000001e;
     }
 
     .infantariaBox {
-      height: 130px;
+      height: 80px;
     }
 
     /* PLAYER CARDS */
@@ -904,13 +927,16 @@
         <div class="sectorDiv">
           <main id="main">
             <div class="mainDefesa"></div>
-            <div class="mainAtaque"></div>
+            <div class="mainAtaque">
+
+
+            </div>
             <div class="mainBlindado"></div>
             <div class="mainRecon"></div>
             <div class="mainReserva">
               <section class="sector" data-sector-type="reservaList">
                 <h4>Reservas</h4>
-                <div class="sectorList"></div>
+                <div class="sectorListReserva"></div>
               </section>
             </div>
             <!-- <section class="sector" data-sector="reserva">
@@ -943,6 +969,9 @@
                   <li><button class="setorBtn">Defesa</button></li>
                   <li><button class="setorBtn">Defesa Retaguarda</button></li>
                   <li>
+                    <button class="setorBtn">Defesa Central</button>
+                  </li>
+                  <li>
                     <button class="setorBtn">Defesa Central Controle</button>
                   </li>
                   <li>
@@ -960,6 +989,9 @@
                   <li><button class="setorBtn">Defesa Flanco Forte</button></li>
                   <li>
                     <button class="setorBtn">Defesa Flanco Coringa</button>
+                  </li>
+                  <li>
+                    <button class="setorBtn">Defesa Frontal</button>
                   </li>
                   <li>
                     <button class="setorBtn">Defesa Frontal Centro</button>
@@ -980,6 +1012,9 @@
                 <ul id="ataqueList" class="accordionBody">
                   <li>
                     <button class="setorBtn">Ataque</button>
+                  </li>
+                  <li>
+                    <button class="setorBtn">Ataque Frontal</button>
                   </li>
                   <li>
                     <button class="setorBtn">Ataque Frontal Centro</button>
@@ -1003,7 +1038,7 @@
                     <button class="setorBtn">Ataque Flanco Direito</button>
                   </li>
                   <li>
-                    <button class="setorBtn">Ataque Flanco Retaguarda</button>
+                    <button class="setorBtn">Ataque Retaguarda</button>
                   </li>
                   <li><button class="setorBtn">Ataque Coringa</button></li>
                 </ul>
@@ -1137,6 +1172,101 @@
     
     <!-- MODAL END-->
 
+
+    <!-- MODAL TRANSPORT BOX -->
+    
+    <div class="modalNTBox" id="modalTransp">
+      <button class="modalFechar" onclick="fecharModalTransp()"><img src="icons/x.svg" alt="FECHAR"></button>
+      <button class="modalCopiar" onclick="copiarEscalTransp()"><img src="icons/copy.svg" alt="COPIAR"></button>
+      <div class="modalNTPanel">
+        <div class="modalLeftPanel">
+              <div class="sidebarContainer">
+                <nav id="sidebar" aria-labelledby="soldadosLabel">
+
+                  <div class="searchBox">
+                    <div class="searchContainer">
+                      <input
+                        type="text"
+                        id="searchInput"
+                        placeholder="Pesquisar jogador"
+                      />
+                      <button class="clear-btn" id="clearBtn">
+                        <img src="icons/x.svg" alt="x" />
+                      </button>
+                    </div>
+                    <div class="searchList" id="searchResults"></div>
+                  </div>
+
+                  <div class="categoryBox">
+                    <div class="category">
+                      <div class="category-header active" data-target="compList">
+                        Competitivo
+                      </div>
+                      <div class="category-body" id="compList"></div>
+                    </div>
+
+                    <div class="category">
+                      <div class="category-header" data-target="casualList">
+                        Casual
+                      </div>
+                      <div class="category-body" id="casualList"></div>
+                    </div>
+
+                    <div class="category">
+                      <div class="category-header" data-target="recList">Recruta</div>
+                      <div class="category-body" id="recList"></div>
+                    </div>
+                  </div>
+                </nav>
+              </div>
+        </div>
+        <div class="modalRightPanel">
+
+          <div class="qgCard">
+            <div>
+              <h3>QG1</h3>
+            </div>
+            <div class="qgCardEnv">
+              <div class="eng"><img src="icons/eng.png" alt="ENG"><div></div></div>
+              <div class="sup"><img src="icons/sup.png" alt="SUP"><div></div></div>
+              <div class="sup"><img src="icons/sup.png" alt="SUP"><div></div></div>
+              <div class="sup"><img src="icons/sup.png" alt="SUP"><div></div></div>
+              <div class="sup"><img src="icons/sup.png" alt="SUP"><div></div></div>
+            </div>
+          </div>
+
+          <div class="qgCard">
+            <div>
+              <h3>QG2</h3>
+            </div>
+            <div class="qgCardEnv">
+              <div class="eng"><img src="icons/eng.png" alt="ENG"><div></div></div>
+              <div class="sup"><img src="icons/sup.png" alt="SUP"><div></div></div>
+              <div class="sup"><img src="icons/sup.png" alt="SUP"><div></div></div>
+              <div class="sup"><img src="icons/sup.png" alt="SUP"><div></div></div>
+              <div class="sup"><img src="icons/sup.png" alt="SUP"><div></div></div>
+            </div>
+          </div>
+
+          <div class="qgCard">
+            <div>
+              <h3>QG3</h3>
+            </div>
+            <div class="qgCardEnv">
+              <div class="eng"><img src="icons/eng.png" alt="ENG"><div></div></div>
+              <div class="sup"><img src="icons/sup.png" alt="SUP"><div></div></div>
+              <div class="sup"><img src="icons/sup.png" alt="SUP"><div></div></div>
+              <div class="sup"><img src="icons/sup.png" alt="SUP"><div></div></div>
+              <div class="sup"><img src="icons/sup.png" alt="SUP"><div></div></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+    
+    <!-- MODAL END-->
+
     <!-- TELAS FUTURAS -->
     <div id="dashboard" class="screen">
       <button class="btn-home" onclick="openScreen('home')">Home</button>
@@ -1158,27 +1288,28 @@
         "0_P0H4_L0K4",
         "1PaiCansado",
         "5ergi0",
-        "ALISSON",
+        "Alisson",
         "Bakunin13",
         "Blasius12",
         "Bob_Killer",
         "Brandao",
         "Brant",
         "BuckCompton",
-        "CAIOXP",
-        "CAIOZER4",
-        "CAMARA",
+        "CaioXp",
+        "Caiozer4",
+        "Camara",
         "Cesquine",
         "Capitao",
         "Caio",
         "Comelli",
-        "DANKA",
+        "Danka",
         "Desgramado",
         "Doc",
         "Dod",
         "Eugenio-FJV",
         "Fidelcastro",
         "Franco762",
+        "Gado",
         "GodsSon",
         "Goiano",
         "Goldenn",
@@ -1202,21 +1333,21 @@
         "Padre",
         "Prata",
         "PUPPET",
-        "QUAIADO",
+        "Quaiado",
         "Rafa12k",
         "Remhard",
         "Ricardo S",
         "Rigoni",
         "SadBoy",
         "Sanches",
-        "SHADOW",
+        "Shadow",
         "SoldadoDoss",
         "THDemolidor",
-        "TONELOTTO",
+        "Tonelotto",
         "TTruppel",
         "ThC",
         "VICTIM",
-        "WAMBROSIO",
+        "Wambrosio",
         "William29",
         "Xtray",
         "ZACARIAS",
@@ -1225,8 +1356,8 @@
         "Zalapson",
         "Zimmerman",
         "finoti",
-        "matex777",
-        "shelby",
+        "Matex777",
+        "Shelby",
       ];
 
       const casual = [
@@ -1258,6 +1389,8 @@
         "ISAQUE SC",
         "Igor",
         "Italiano",
+        "Israel",
+        "Stick",
         "JESTER",
         "JJRambo",
         "Jhombrico",
@@ -1298,7 +1431,6 @@
         "SOUSA",
         "Sick",
         "SoldadoTHC",
-        "Stick",
         "TENENTE",
         "TheJuanLm",
         "Thiago",
@@ -1435,19 +1567,17 @@
           setorDiv.innerHTML = `
       <h4>${nomeSetor}</h4>
       <div class="sectorList">
-        <div class="oficial">
-          OFICIAL
-          <div class="oficialBox"></div>
+        <div class="oficial"><img src="icons/oficial.png" alt="OF"><div class="oficialBox"></div>
         </div>
         <div class="infantaria">
-          INFANTARIA
           <div class="infantariaBox"></div>
         </div>
+      </div>
       </div>
     `;
 
           container.appendChild(setorDiv);
-          habilitarRemoverSetor(setorDiv); // Habilita o click direito para remover setor
+          //habilitarRemoverSetor(setorDiv); // Habilita o click direito para remover setor
           fecharModal();
         });
       });
@@ -1593,7 +1723,7 @@
       // aplica para os já existentes
       document
         .querySelectorAll(
-          ".dropSidebar, .oficialBox, .infantariaBox, .sectorList"
+          ".dropSidebar, .oficialBox, .infantariaBox, .sectorListReserva"
         )
         .forEach(habilitarDrop);
 
@@ -1604,7 +1734,7 @@
             if (node.nodeType === 1) {
               node
                 .querySelectorAll(
-                  ".dropSidebar, .oficialBox, .infantariaBox, .sectorList"
+                  ".dropSidebar, .oficialBox, .infantariaBox, .sectorListReserva"
                 )
                 .forEach(habilitarDrop);
             }
@@ -1720,7 +1850,7 @@
       // ======================================
 
       function copiarEscalacao() {
-  let texto = "⚠️ ESCALAÇÃO ⚠️\n\n";
+  let texto = "*nomeJogo* \n\nMapa: \nNeutro: \nData: \nLado: \nServer: \nSenha: \n\n⚠️ ESCALAÇÃO ⚠️\n\n";
 
   // =====================
   // Sidebar: Comando e Artilharia
@@ -1730,8 +1860,7 @@
   );
   if (comando.length) {
     texto += "🪖 COMANDO\n";
-    comando.forEach((card) => (texto += card.innerText + "\n"));
-    texto += "\n";
+    texto += Array.from(comando).map(card => `  ${card.innerText}`).join("\n") + "\n\n";
   }
 
   const artilharia = document.querySelectorAll(
@@ -1739,47 +1868,50 @@
   );
   if (artilharia.length) {
     texto += "💣 ARTILHARIA\n";
-    artilharia.forEach((card) => (texto += card.innerText + "\n"));
-    texto += "\n";
+    texto += Array.from(artilharia).map(card => `  ${card.innerText}`).join("\n") + "\n\n";
   }
 
   // =====================
   // Main: setores dinâmicos
   // =====================
   const setores = document.querySelectorAll("#main .sector");
-  const tiposImpressos = new Set(); // <- guarda os tipos já usados
+  const tiposImpressos = new Set();
 
   setores.forEach((sector) => {
-    const titulo =
-      sector.querySelector("h4")?.innerText.toLocaleUpperCase() || "SEM NOME";
-    const tipo = sector.dataset.sectorType;
+  const titulo =
+    sector.querySelector("h4")?.innerText.toLocaleUpperCase() || "SEM NOME";
+  const tipo = sector.dataset.sectorType;
 
-    // imprime o cabeçalho só se ainda não foi impresso
-    if (!tiposImpressos.has(tipo)) {
-      if (tipo.includes("defesa")) {
-        texto += "🛡🛡 DEFESA 🛡🛡\n\n";
-      } else if (tipo.includes("ataque")) {
-        texto += "⚔⚔ ATAQUE ⚔⚔\n\n";
-      } else if (tipo.includes("recon")) {
-        texto += "📸📸 VIGIA 📸📸\n\n";
-      } else if (tipo.includes("blind")) {
-        texto += "🚜🚜🚜 BLINDADO 🚜🚜🚜\n\n";
-      }
-      tiposImpressos.add(tipo);
+  if (!tiposImpressos.has(tipo)) {
+    if (tipo.includes("defesa")) {
+      texto += "🛡🛡  DEFESA  🛡🛡\n\n";
+    } else if (tipo.includes("ataque")) {
+      texto += "⚔⚔  ATAQUE  ⚔⚔\n\n";
+    } else if (tipo.includes("recon")) {
+      texto += "📸📸  VIGIA 📸📸\n\n";
+    } else if (tipo.includes("blind")) {
+      texto += "🚜🚜  BLINDADO  🚜🚜\n\n";
+    } else if (tipo.includes("reserva")) {
+      texto += "";
     }
+    tiposImpressos.add(tipo);
+  }
 
     texto += `${titulo}\n`;
 
-    // pega OFICIAL
     const oficial = sector.querySelector(".oficialBox .player-card");
     if (oficial) {
       texto += `${oficial.innerText} (OFICIAL)\n`;
     }
 
-    // pega INFANTARIA
-    sector
-      .querySelectorAll(".infantariaBox .player-card")
-      .forEach((card) => (texto += card.innerText + "\n"));
+    const infantaria = sector.querySelectorAll(".infantariaBox .player-card");
+    if (infantaria.length) {
+      texto += Array.from(infantaria).map(card => `  ${card.innerText}`).join("\n") + "\n";
+    }
+    const reserva = sector.querySelectorAll(".sectorListReserva .player-card");
+    if (reserva.length) {
+      texto += Array.from(reserva).map(card => `  ${card.innerText}`).join("\n") + "\n";
+    }
 
     texto += "\n";
   });
@@ -1792,6 +1924,7 @@
     .then(() => alert("Escalação copiada para área de transferência!"))
     .catch((err) => console.error("Erro ao copiar:", err));
 }
+
 
 
       // ======================================
@@ -1900,21 +2033,48 @@
       });
 
 
-
      function copiarEscalNodo(){
-      
+      console.log("copiando nodos")
      }
 
      function fecharModalNodo(){
       const modal = document.getElementById("modalNodo");
       modal.style.display = "none";
      }
-
+     
      function abrirEscalNodo(){
       const modal = document.getElementById("modalNodo");
       modal.style.display = "block";
      }
 
+     function openScreenTransp(){
+      const modal = document.getElementById("modalTransp");
+      modal.style.display = "block";
+     }
+
+       function fecharModalTransp(){
+      const modal = document.getElementById("modalTransp");
+      modal.style.display = "none";
+     }
+
+     function copiarEscalTransp(){
+      console.log("copiando transps")
+     }
+
+     function openScreenRadio(){
+      const modal = document.getElementById("modalTransp");
+      modal.style.display = "block";
+     }
+
+       function fecharModalRadio(){
+      const modal = document.getElementById("modalTransp");
+      modal.style.display = "none";
+     }
+
+     function copiarEscalRadio(){
+      console.log("copiando radios")
+     }
+     
     </script>
   </body>
 </html>
